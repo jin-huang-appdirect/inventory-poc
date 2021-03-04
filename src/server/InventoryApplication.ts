@@ -7,7 +7,7 @@ import * as http from 'http';
 
 const graphqlPath = '/api/graphql';
 
-export class InventoryApplication extends InventoryApolloApplication{
+export class InventoryApplication extends InventoryApolloApplication {
   app: express.Application;
   server: InventoryServer;
   httpServer: http.Server;

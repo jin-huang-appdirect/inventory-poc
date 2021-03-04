@@ -37,7 +37,7 @@ union ItemCreateError = DuplicateSerialNumberError
 union ItemRetrieveError = RetrieveQuantityError | LowStockError
 
 type ItemCreatePayload {
-  product: Item
+  item: Item
   userErrors: [ItemCreateError!]
 }
 
