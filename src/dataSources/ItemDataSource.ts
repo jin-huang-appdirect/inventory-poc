@@ -1,3 +1,3 @@
 export interface ItemDataSource {
-  getInventoryQuantity(): Promise<Number>;
+  getItemQuantity(): Promise<Number>;
 }
