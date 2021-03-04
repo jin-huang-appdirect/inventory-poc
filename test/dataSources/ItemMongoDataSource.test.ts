@@ -22,4 +22,9 @@ describe('item mongo data source', () => {
   it('can query item quantity from mongodb', async () => {
     expect(await itemMongoDataSource.getItemQuantity()).toEqual(1);
   });
+
+  it('can insert item into mongodb', async () => {
+    await itemMongoDataSource.insertItem({ id: v4(), serialNumber: 'serial-number-2' });
+    expect(await itemMongoDataSource.getItemQuantity()).toEqual(2);
+  });
 });
