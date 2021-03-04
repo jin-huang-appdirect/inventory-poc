@@ -14,4 +14,8 @@ export class ItemMongoDataSource extends MongoDataSource<ItemEntity, any> implem
   insertItem(item: ItemEntity): Promise<ItemEntity> {
     return this.collection.insertOne(item).then(() => item);
   }
+
+  deleteItemById(id: string): Promise<any> {
+    return this.collection.deleteOne({ id });
+  }
 }

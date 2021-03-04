@@ -11,20 +11,29 @@ describe('item mongo data source', () => {
     const client = new MongoClient(configuration.mongoUrl.toString(),  { useUnifiedTopology: true });
     connection = await client.connect();
     collection = connection.db('test-db').collection<any>('item-test');
-    await collection.deleteMany({});
-    await collection.insertMany([{ id: v4(), serialNumber: 'serial-number-1' }]);
 
     itemMongoDataSource = new ItemMongoDataSource(collection);
   });
 
+  beforeEach(async () => await collection.deleteMany({}));
+
   afterAll(async () => await connection.close());
 
   it('can query item quantity from mongodb', async () => {
+    await collection.insertMany([{ id: v4(), serialNumber: 'serial-number-1' }]);
     expect(await itemMongoDataSource.getItemQuantity()).toEqual(1);
   });
 
   it('can insert item into mongodb', async () => {
-    await itemMongoDataSource.insertItem({ id: v4(), serialNumber: 'serial-number-2' });
-    expect(await itemMongoDataSource.getItemQuantity()).toEqual(2);
+    const id = v4();
+    await itemMongoDataSource.insertItem({ id, serialNumber: 'serial-number-2' });
+    expect(await collection.find({ id }).count()).toEqual(1);
+  });
+
+  it('can delete 2 item from mongodb', async () => {
+    let id = v4();
+    await collection.insertMany([{ id: v4(), serialNumber: 'serial-number-3' }]);
+    await itemMongoDataSource.deleteItemById(id);
+    expect(await collection.find({ id }).count()).toEqual(0);
   });
 });
