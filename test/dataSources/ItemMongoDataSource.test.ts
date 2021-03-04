@@ -21,20 +21,22 @@ describe('item mongo data source', () => {
 
   it('can query item quantity from mongodb', async () => {
     await collection.insertMany([{ id: v4(), serialNumber: 'serial-number-1' }]);
+
     expect(await itemMongoDataSource.getItemQuantity()).toEqual(1);
   });
 
   it('can insert item into mongodb', async () => {
     const id = v4();
     await itemMongoDataSource.insertItem({ id, serialNumber: 'serial-number-2' });
+
     expect(await collection.find({ id }).count()).toEqual(1);
   });
 
-  it('can delete an item by id from mongodb', async () => {
-    let id = v4();
+  it('can delete an item by serialNumber from mongodb', async () => {
     await collection.insertMany([{ id: v4(), serialNumber: 'serial-number-3' }]);
-    await itemMongoDataSource.deleteItemById(id);
-    expect(await collection.find({ id }).count()).toEqual(0);
+    await itemMongoDataSource.deleteItemBySerialNumber('serial-number-3');
+
+    expect(await collection.find({ serialNumber: 'serial-number-3' }).count()).toEqual(0);
   });
 
   it('can get a list of items from mongodb', async () => {
@@ -44,6 +46,7 @@ describe('item mongo data source', () => {
       { id: v4(), serialNumber: 'serial-number-6' }
       ]);
     const items = await itemMongoDataSource.getItems(2);
+
     expect(items.length).toEqual(2);
     expect(items[0].serialNumber).toEqual('serial-number-4');
     expect(items[1].serialNumber).toEqual('serial-number-5');
