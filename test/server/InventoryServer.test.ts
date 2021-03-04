@@ -1,6 +1,5 @@
 import { InventoryServer } from '../../src/server/InventoryServer';
 import { InventoryServerConfiguration } from '../../src/server/InventoryServerConfiguration';
-import { ApolloServer } from 'apollo-server';
 import { Db, MongoClient } from 'mongodb';
 
 const configuration = new InventoryServerConfiguration('test-db', 9000);
@@ -16,7 +15,7 @@ describe('inventory server', () => {
   afterAll(async () => await server.closeConnections());
 
   it('initialize server as apollo server', () => {
-    expect(server).toBeInstanceOf(ApolloServer);
+    expect(server).toBeInstanceOf(InventoryServer);
   });
 
   it('initialize server configuration', () => {

@@ -19,10 +19,10 @@ describe('inventory application', () => {
   });
 
   it('initialize inventory server when application started', () => {
-    expect(application).toBeInstanceOf(InventoryApplication);
+    expect(application.server).toBeInstanceOf(InventoryServer);
   });
 
   it('initialize listening port when application started', () => {
-    expect(application).toBeInstanceOf(InventoryApplication);
+    expect(application.port).toBe(9000);
   });
 });
