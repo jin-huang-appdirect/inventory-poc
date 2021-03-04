@@ -6,6 +6,7 @@ describe('inventory server configuration', () => {
   beforeAll(() => {
     configuration = new InventoryServerConfiguration('test-db', 9000);
   });
+
   it('initialize mongo url', () => {
     expect(configuration.mongoUrl.toString()).toBe('mongodb://localhost:27017/?retryWrites=true');
   });
