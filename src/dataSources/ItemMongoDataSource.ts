@@ -11,6 +11,10 @@ export class ItemMongoDataSource extends MongoDataSource<ItemEntity, any> implem
     return this.collection.count().then(number => number);
   }
 
+  getItems(quantity: number): Promise<ItemEntity[]> {
+    return this.collection.find().sort({ serialNumber: 1 }).limit(quantity).toArray();
+  }
+
   insertItem(item: ItemEntity): Promise<ItemEntity> {
     return this.collection.insertOne(item).then(() => item);
   }
