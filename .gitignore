@@ -1,0 +1,15 @@
+# dependencies
+node_modules
+
+# testing
+coverage
+
+# artifacts
+build
+dist
+
+# IDEs
+.idea
+
+# misc
+.DS_Store
