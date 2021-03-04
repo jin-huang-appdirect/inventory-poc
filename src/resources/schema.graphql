@@ -1,0 +1,47 @@
+type Query {
+  items: Int
+}
+
+type Mutation {
+  itemCreate(serialNumber: String!): ItemCreatePayload
+  itemRetrieve(quantity: Int!): ItemRetrievePayload
+}
+
+type Item {
+  "unique identifier of item"
+  serialNumber: String!
+}
+
+interface UserError {
+  message: String!
+  path: [String!]
+}
+
+type DuplicateSerialNumberError implements UserError {
+  message: String!
+  path: [String!]
+}
+
+type RetrieveQuantityError implements UserError {
+  message: String!
+  path: [String!]
+}
+
+type LowStockError implements UserError {
+  message: String!
+  path: [String!]
+}
+
+union ItemCreateError = DuplicateSerialNumberError
+
+union ItemRetrieveError = RetrieveQuantityError | LowStockError
+
+type ItemCreatePayload {
+  product: Item
+  userErrors: [ItemCreateError!]
+}
+
+type ItemRetrievePayload {
+  serialNumbers: [String]
+  userErrors: [ItemRetrieveError!]
+}
