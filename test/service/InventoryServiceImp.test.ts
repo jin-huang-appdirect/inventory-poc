@@ -50,4 +50,19 @@ describe('item mongo service', () => {
 
     expect(await collection.findOne({ serialNumber: 'serial-number-4' })).toBeNull();
   });
+
+  it('can retrieve items', async () => {
+    await collection.insertMany([
+      { id: v4(), serialNumber: 'serial-number-5' },
+      { id: v4(), serialNumber: 'serial-number-6' },
+      { id: v4(), serialNumber: 'serial-number-7' },
+    ]);
+
+    const items = await inventoryService.retrieveItems(2);
+
+    expect(await collection.find().count()).toBe(1);
+    expect(items.length).toBe(2);
+    expect(items[0].serialNumber).toBe('serial-number-5');
+    expect(items[1].serialNumber).toBe('serial-number-6');
+  });
 });

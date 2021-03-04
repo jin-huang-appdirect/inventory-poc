@@ -27,4 +27,10 @@ export class InventoryServiceImp extends InventoryService {
   deleteItemBySerialNumber(serialNumber: String): Promise<any> {
     return this.itemDataSource.deleteItemBySerialNumber(serialNumber);
   }
+
+  async retrieveItems(quantity: number): Promise<Item[]> {
+    const items = await this.itemDataSource.getItems(quantity);
+    items.map(item => this.deleteItemBySerialNumber(item.serialNumber));
+    return items;
+  }
 }
