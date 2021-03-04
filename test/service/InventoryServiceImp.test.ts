@@ -4,7 +4,7 @@ import { v4 } from 'uuid';
 import { ItemMongoDataSource } from '../../src/dataSources/ItemMongoDataSource';
 import { InventoryServiceImp } from '../../src/service/InventoryServiceImp';
 import { InventoryService } from '../../src/service/InventoryService';
-import { DuplicateSerialNumberError } from '../../src/errors';
+import { DuplicateSerialNumberError, LowStockError } from '../../src/errors';
 
 describe('item mongo service', () => {
   let connection: MongoClient, collection: Collection;
@@ -64,5 +64,18 @@ describe('item mongo service', () => {
     expect(items.length).toBe(2);
     expect(items[0].serialNumber).toBe('serial-number-5');
     expect(items[1].serialNumber).toBe('serial-number-6');
+  });
+
+  it('throw error when stock is not available', async () => {
+    await collection.insertMany([
+      { id: v4(), serialNumber: 'serial-number-8' },
+      { id: v4(), serialNumber: 'serial-number-9' },
+    ]);
+
+    try {
+      await inventoryService.retrieveItems(3);
+    } catch (error) {
+      expect(error).toBeInstanceOf(LowStockError);
+    }
   });
 });

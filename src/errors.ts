@@ -13,3 +13,9 @@ export class DuplicateSerialNumberError extends UserError {
     super(`Product with serial number: ${serialNumber} already exists `);
   }
 }
+
+export class LowStockError extends UserError {
+  constructor(quantity: number) {
+    super(`There are only ${quantity} left. `);
+  }
+}
