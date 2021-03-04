@@ -43,4 +43,11 @@ describe('item mongo service', () => {
       expect(error).toBeInstanceOf(DuplicateSerialNumberError);
     }
   });
+
+  it('can delete item by serialNumber', async () => {
+    await collection.insertMany([{ id: v4(), serialNumber: 'serial-number-4' }]);
+    await inventoryService.deleteItemBySerialNumber('serial-number-4');
+
+    expect(await collection.findOne({ serialNumber: 'serial-number-4' })).toBeNull();
+  });
 });
