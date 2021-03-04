@@ -4,7 +4,7 @@ import { v4 } from 'uuid';
 import { ItemMongoDataSource } from '../../src/dataSources/ItemMongoDataSource';
 import { InventoryServiceImp } from '../../src/service/InventoryServiceImp';
 import { InventoryService } from '../../src/service/InventoryService';
-import { DuplicateSerialNumberError, LowStockError } from '../../src/errors';
+import { DuplicateSerialNumberError, LowStockError, RetrieveQuantityError } from '../../src/errors';
 
 describe('item mongo service', () => {
   let connection: MongoClient, collection: Collection;
@@ -76,6 +76,19 @@ describe('item mongo service', () => {
       await inventoryService.retrieveItems(3);
     } catch (error) {
       expect(error).toBeInstanceOf(LowStockError);
+    }
+  });
+
+  it('throw error when retrieved quantity exceed 3', async () => {
+    await collection.insertMany([
+      { id: v4(), serialNumber: 'serial-number-8' },
+      { id: v4(), serialNumber: 'serial-number-9' },
+    ]);
+
+    try {
+      await inventoryService.retrieveItems(4);
+    } catch (error) {
+      expect(error).toBeInstanceOf(RetrieveQuantityError);
     }
   });
 });

@@ -2,7 +2,9 @@ import { InventoryService } from './InventoryService';
 import { ItemDataSource } from '../dataSources/ItemDataSource';
 import { Item } from './Item';
 import { v4 } from 'uuid';
-import { DuplicateSerialNumberError, LowStockError } from '../errors';
+import { DuplicateSerialNumberError, LowStockError, RetrieveQuantityError } from '../errors';
+
+const maxQuantity = 3;
 
 export class InventoryServiceImp extends InventoryService {
   itemDataSource: ItemDataSource;
@@ -29,10 +31,15 @@ export class InventoryServiceImp extends InventoryService {
   }
 
   async retrieveItems(quantity: number): Promise<Item[]> {
+    if(quantity > maxQuantity) {
+      throw new RetrieveQuantityError();
+    }
+
     const items = await this.itemDataSource.getItems(quantity);
     if(items.length < quantity) {
       throw new LowStockError(items.length);
     }
+
     items.map(item => this.deleteItemBySerialNumber(item.serialNumber));
     return items;
   }

@@ -19,3 +19,9 @@ export class LowStockError extends UserError {
     super(`There are only ${quantity} left. `);
   }
 }
+
+export class RetrieveQuantityError extends UserError {
+  constructor() {
+    super('You can only buy 3 items the most');
+  }
+}
