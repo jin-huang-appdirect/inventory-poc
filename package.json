@@ -5,7 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "lint": "eslint src test --ext=.js,.ts",
-    "lint:fix": "eslint --fix src e2e --ext=.js,.ts",
+    "lint:fix": "eslint --fix src test e2e --ext=.js,.ts",
     "start": "nodemon src/index.ts",
     "test": "jest"
   },
