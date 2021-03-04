@@ -4,6 +4,7 @@ import { v4 } from 'uuid';
 import { ItemMongoDataSource } from '../../src/dataSources/ItemMongoDataSource';
 import { InventoryServiceImp } from '../../src/service/InventoryServiceImp';
 import { InventoryService } from '../../src/service/InventoryService';
+import { DuplicateSerialNumberError } from '../../src/errors';
 
 describe('item mongo service', () => {
   let connection: MongoClient, collection: Collection;
@@ -27,5 +28,19 @@ describe('item mongo service', () => {
     await collection.insertMany([{ id: v4(), serialNumber: 'serial-number-1' }]);
 
     expect(await inventoryService.getItemQuantity()).toEqual(1);
+  });
+
+  it('can add item', async () => {
+    await inventoryService.addItem({ serialNumber: 'serial-number-2' });
+    expect(await collection.find().count()).toEqual(1);
+  });
+
+  it('throw error when item already exists', async () => {
+    try {
+      await inventoryService.addItem({ serialNumber: 'serial-number-3' });
+      await inventoryService.addItem({ serialNumber: 'serial-number-3' });
+    } catch (error) {
+      expect(error).toBeInstanceOf(DuplicateSerialNumberError);
+    }
   });
 });

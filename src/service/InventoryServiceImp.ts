@@ -1,5 +1,8 @@
 import { InventoryService } from './InventoryService';
 import { ItemDataSource } from '../dataSources/ItemDataSource';
+import { Item } from './Item';
+import { v4 } from 'uuid';
+import { DuplicateSerialNumberError } from '../errors';
 
 export class InventoryServiceImp extends InventoryService {
   itemDataSource: ItemDataSource;
@@ -11,5 +14,13 @@ export class InventoryServiceImp extends InventoryService {
 
   getItemQuantity(): Promise<Number> {
     return this.itemDataSource.getItemQuantity();
+  }
+
+  async addItem(item: Item): Promise<Item> {
+    if (await this.itemDataSource.getItemBySerialNumber(item.serialNumber)) {
+      throw new DuplicateSerialNumberError(item.serialNumber);
+    }
+
+    return await this.itemDataSource.insertItem({ id: v4(), ...item });
   }
 }

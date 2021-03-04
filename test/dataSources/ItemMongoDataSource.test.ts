@@ -51,4 +51,11 @@ describe('item mongo data source', () => {
     expect(items[0].serialNumber).toEqual('serial-number-4');
     expect(items[1].serialNumber).toEqual('serial-number-5');
   });
+
+  it('can query item by serialNumber from mongodb', async () => {
+    await collection.insertMany([{ id: v4(), serialNumber: 'serial-number-7' }]);
+    const entity = await itemMongoDataSource.getItemBySerialNumber('serial-number-7');
+
+    expect(entity.serialNumber).toEqual('serial-number-7');
+  });
 });
