@@ -2,7 +2,7 @@ import { buildFederatedSchema } from '@apollo/federation';
 import { gql } from 'apollo-server';
 import { readFileSync } from 'fs';
 import * as path from 'path';
-import { itemCreate } from '../resolvers/mutations/itemCreate';
+import { itemReturn } from '../resolvers/mutations/itemReturn';
 import { itemQuantity } from '../resolvers/queries/itemQuantity';
 import { itemRetrieve } from '../resolvers/mutations/itemRetrieve';
 
@@ -16,7 +16,7 @@ export function buildSchema() {
         itemQuantity,
       },
       Mutation: {
-        itemCreate,
+        itemReturn,
         itemRetrieve
       },
     }

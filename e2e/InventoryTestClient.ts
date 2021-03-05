@@ -20,7 +20,7 @@ export class InventoryTestClient extends TestClient {
       mutation: gql`
         ${itemFragment}
         mutation($serialNumber: String!) {
-          itemCreate(serialNumber: $serialNumber) {
+          itemReturn(serialNumber: $serialNumber) {
             item { ...item }
             userErrors {
               ... on DuplicateSerialNumberError {
@@ -31,7 +31,7 @@ export class InventoryTestClient extends TestClient {
         }
       `,
       variables: { serialNumber },
-    }).then(result => result.data.itemCreate);
+    }).then(result => result.data.itemReturn);
   }
 
   retrieve(quantity: number): Promise<ItemRetrievePayload> {

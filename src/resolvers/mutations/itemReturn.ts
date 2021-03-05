@@ -11,7 +11,7 @@ type ItemCreatePayload = {
   userErrors?: UserError[];
 }
 
-export async function itemCreate(parent: any, { serialNumber }: ItemCreateArgs, { dataSources: { items, soldItems } }: any): Promise<ItemCreatePayload> {
+export async function itemReturn(parent: any, { serialNumber }: ItemCreateArgs, { dataSources: { items, soldItems } }: any): Promise<ItemCreatePayload> {
 
   const service  = new InventoryServiceImp(items, soldItems);
   const response  = await service.addItem({ serialNumber }, items);
