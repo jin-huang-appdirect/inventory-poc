@@ -1,5 +1,5 @@
 type Query {
-  items: Int
+  itemQuantity: Int
 }
 
 type Mutation {

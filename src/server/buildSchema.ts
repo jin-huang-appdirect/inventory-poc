@@ -2,6 +2,7 @@ import { buildFederatedSchema } from '@apollo/federation';
 import { gql } from 'apollo-server';
 import { readFileSync } from 'fs';
 import * as path from 'path';
+import { itemCreate } from '../resolvers/mutations/itemCreate';
 
 const schemaFilePath = 'resources/schema.graphql';
 
@@ -12,6 +13,7 @@ export function buildSchema() {
       Query: {
       },
       Mutation: {
+        itemCreate
       },
     }
   });
