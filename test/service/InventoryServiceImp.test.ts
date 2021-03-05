@@ -30,71 +30,79 @@ describe('inventory service', () => {
 
   afterAll(async () => await connection.close());
 
-  it('can query item quantity', async () => {
-    await collection.insertMany([{ id: v4(), serialNumber: 'serial-number-1' }]);
+  describe('getItemQuantity', () => {
+    it('can query item quantity', async () => {
+      await collection.insertMany([{ id: v4(), serialNumber: 'serial-number-1' }]);
 
-    expect(await inventoryService.getItemQuantity()).toEqual(1);
+      expect(await inventoryService.getItemQuantity()).toEqual(1);
+    });
   });
 
-  it('can add item', async () => {
-    await inventoryService.addItem({ serialNumber: 'serial-number-2' }, itemMongoDataSource);
-    expect(await collection.find().count()).toEqual(1);
-  });
+  describe('addItem', () => {
+    it('can add item', async () => {
+      await inventoryService.addItem({ serialNumber: 'serial-number-2' }, itemMongoDataSource);
+      expect(await collection.find().count()).toEqual(1);
+    });
 
-  it('can add item into sold collection', async () => {
-    await inventoryService.addItem({ serialNumber: 'serial-number-2' }, soldItemMongoDataSource);
-    expect(await soldCollection.find().count()).toEqual(1);
-  });
+    it('can add item into sold collection', async () => {
+      await inventoryService.addItem({ serialNumber: 'serial-number-2' }, soldItemMongoDataSource);
+      expect(await soldCollection.find().count()).toEqual(1);
+    });
 
-  it('return error when item already exists', async () => {
+    it('return error when item already exists', async () => {
       await inventoryService.addItem({ serialNumber: 'serial-number-3' }, itemMongoDataSource);
       expect(await inventoryService.addItem({ serialNumber: 'serial-number-3' }, itemMongoDataSource)).toBeInstanceOf(DuplicateSerialNumberError);
+    });
   });
 
-  it('can delete item by serialNumber', async () => {
-    await collection.insertMany([{ id: v4(), serialNumber: 'serial-number-4' }]);
-    await inventoryService.deleteItemBySerialNumber('serial-number-4');
+  describe('deleteItemBySerialNumber', () => {
+    it('can delete item by serialNumber', async () => {
+      await collection.insertMany([{ id: v4(), serialNumber: 'serial-number-4' }]);
+      await inventoryService.deleteItemBySerialNumber('serial-number-4');
 
-    expect(await collection.findOne({ serialNumber: 'serial-number-4' })).toBeNull();
+      expect(await collection.findOne({ serialNumber: 'serial-number-4' })).toBeNull();
+    });
   });
 
-  it('can retrieve items', async () => {
-    await collection.insertMany([
-      { id: v4(), serialNumber: 'serial-number-5' },
-      { id: v4(), serialNumber: 'serial-number-6' },
-      { id: v4(), serialNumber: 'serial-number-7' },
-    ]);
+  describe('retrieveItems', () => {
+    it('can retrieve items', async () => {
+      await collection.insertMany([
+        { id: v4(), serialNumber: 'serial-number-5' },
+        { id: v4(), serialNumber: 'serial-number-6' },
+        { id: v4(), serialNumber: 'serial-number-7' },
+      ]);
 
-    await inventoryService.retrieveItems(2);
-    expect(await collection.find().count()).toBe(1);
-    expect(await soldCollection.find().count()).toBe(2);
-  });
+      await inventoryService.retrieveItems(2);
+      expect(await collection.find().count()).toBe(1);
+      expect(await soldCollection.find().count()).toBe(2);
+    });
 
-  it('return error when stock is not available', async () => {
-    await collection.insertMany([
-      { id: v4(), serialNumber: 'serial-number-8' },
-      { id: v4(), serialNumber: 'serial-number-9' },
-    ]);
+    it('return error when stock is not available', async () => {
+      await collection.insertMany([
+        { id: v4(), serialNumber: 'serial-number-8' },
+        { id: v4(), serialNumber: 'serial-number-9' },
+      ]);
 
-    expect(await inventoryService.retrieveItems(3)).toBeInstanceOf(LowStockError);
-  });
+      expect(await inventoryService.retrieveItems(3)).toBeInstanceOf(LowStockError);
+    });
 
-  it('return error when retrieved quantity exceed 3', async () => {
-    await collection.insertMany([
-      { id: v4(), serialNumber: 'serial-number-8' },
-      { id: v4(), serialNumber: 'serial-number-9' },
-    ]);
+    it('return error when retrieved quantity exceed 3', async () => {
+      await collection.insertMany([
+        { id: v4(), serialNumber: 'serial-number-8' },
+        { id: v4(), serialNumber: 'serial-number-9' },
+      ]);
 
-    expect(await inventoryService.retrieveItems(4)).toBeInstanceOf(RetrieveQuantityError);
-  });
+      expect(await inventoryService.retrieveItems(4)).toBeInstanceOf(RetrieveQuantityError);
+    });
 
-  it('return error when retrieved quantity equals 0', async () => {
-    await collection.insertMany([
-      { id: v4(), serialNumber: 'serial-number-8' },
-      { id: v4(), serialNumber: 'serial-number-9' },
-    ]);
+    it('return error when retrieved quantity equals 0', async () => {
+      await collection.insertMany([
+        { id: v4(), serialNumber: 'serial-number-8' },
+        { id: v4(), serialNumber: 'serial-number-9' },
+      ]);
 
-    expect(await inventoryService.retrieveItems(0)).toBeInstanceOf(RetrieveQuantityError);
+      expect(await inventoryService.retrieveItems(0)).toBeInstanceOf(RetrieveQuantityError);
+    });
   });
 
   it('can return item when item exist in sold collection', async () => {
@@ -109,11 +117,12 @@ describe('inventory service', () => {
     expect(await collection.find({ serialNumber: 'serial-number-10' }).count()).toEqual(1);
   });
 
+  describe('returnItem', () => {
+    it('can add item when item not exist in sold collection', async () => {
+      await inventoryService.returnItem({ serialNumber: 'serial-number-14' });
 
-  it('can add item when item not exist in sold collection', async () => {
-    await inventoryService.returnItem({ serialNumber: 'serial-number-14' });
-
-    expect(await soldCollection.find({ serialNumber: 'serial-number-14' }).count()).toEqual(0);
-    expect(await collection.find({ serialNumber: 'serial-number-14' }).count()).toEqual(1);
+      expect(await soldCollection.find({ serialNumber: 'serial-number-14' }).count()).toEqual(0);
+      expect(await collection.find({ serialNumber: 'serial-number-14' }).count()).toEqual(1);
+    });
   });
 });
