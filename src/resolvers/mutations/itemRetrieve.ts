@@ -10,9 +10,9 @@ type ItemRetrievePayload = {
   userErrors?: UserError[];
 }
 
-export async function itemRetrieve(parent: any, { quantity }: ItemArgs, { dataSources: { items } }: any): Promise<ItemRetrievePayload | null>{
+export async function itemRetrieve(parent: any, { quantity }: ItemArgs, { dataSources: { items, soldItem } }: any): Promise<ItemRetrievePayload | null>{
 
-  const service  = new InventoryServiceImp(items);
+  const service  = new InventoryServiceImp(items, soldItem);
   const response  = await service.retrieveItems(quantity);
 
   if(response instanceof RetrieveQuantityError || response instanceof LowStockError) {

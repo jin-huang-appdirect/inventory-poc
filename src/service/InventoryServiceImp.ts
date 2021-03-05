@@ -8,22 +8,24 @@ const maxQuantity = 3;
 
 export class InventoryServiceImp extends InventoryService {
   itemDataSource: ItemDataSource;
+  soldItemDataSource: ItemDataSource;
 
-  constructor(itemDataSource: ItemDataSource) {
+  constructor(itemDataSource: ItemDataSource, soldItemDataSource: ItemDataSource) {
     super(itemDataSource);
     this.itemDataSource = itemDataSource;
+    this.soldItemDataSource = soldItemDataSource;
   }
 
   getItemQuantity(): Promise<number> {
     return this.itemDataSource.getItemQuantity();
   }
 
-  async addItem(item: Item): Promise<Item | DuplicateSerialNumberError> {
+  async addItem(item: Item, itemDataSource: ItemDataSource): Promise<Item | DuplicateSerialNumberError> {
     if (await this.itemDataSource.getItemBySerialNumber(item.serialNumber)) {
       return new DuplicateSerialNumberError(item.serialNumber);
     }
 
-    return await this.itemDataSource.insertItem({ id: v4(), ...item });
+    return await itemDataSource.insertItem({ id: v4(), ...item });
   }
 
   deleteItemBySerialNumber(serialNumber: String): Promise<any> {

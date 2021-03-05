@@ -30,6 +30,7 @@ export class InventoryServer extends InventoryApolloServer {
   dataSources(): any {
     return {
       items: new ItemMongoDataSource(this.db.collection('items')),
+      soldItems: new ItemMongoDataSource(this.db.collection('soldItems')),
     };
   }
 }

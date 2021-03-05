@@ -7,20 +7,27 @@ import { InventoryService } from '../../src/service/InventoryService';
 import { DuplicateSerialNumberError, LowStockError, RetrieveQuantityError } from '../../src/errors';
 
 describe('inventory service', () => {
-  let connection: MongoClient, collection: Collection;
-  let itemMongoDataSource: ItemMongoDataSource, inventoryService: InventoryService;
+  let connection: MongoClient, collection: Collection, soldCollection: Collection;
+  let itemMongoDataSource: ItemMongoDataSource, soldItemMongoDataSource: ItemMongoDataSource;
+  let inventoryService: InventoryService;
 
   beforeAll(async () => {
     const configuration = new InventoryServerConfiguration('test-db', 9000);
     const client = new MongoClient(configuration.mongoUrl.toString(),  { useUnifiedTopology: true });
     connection = await client.connect();
     collection = connection.db('test-db').collection<any>('service-test');
+    soldCollection = connection.db('test-db').collection<any>('service-test-sold');
 
     itemMongoDataSource = new ItemMongoDataSource(collection);
-    inventoryService = new InventoryServiceImp(itemMongoDataSource);
+    soldItemMongoDataSource = new ItemMongoDataSource(soldCollection);
+    console.log(soldItemMongoDataSource);
+    inventoryService = new InventoryServiceImp(itemMongoDataSource, soldItemMongoDataSource);
   });
 
-  beforeEach(async () => await collection.deleteMany({}));
+  beforeEach(async () => {
+    await collection.deleteMany({});
+    await soldCollection.deleteMany({});
+  });
 
   afterAll(async () => await connection.close());
 
@@ -31,13 +38,18 @@ describe('inventory service', () => {
   });
 
   it('can add item', async () => {
-    await inventoryService.addItem({ serialNumber: 'serial-number-2' });
+    await inventoryService.addItem({ serialNumber: 'serial-number-2' }, itemMongoDataSource);
     expect(await collection.find().count()).toEqual(1);
   });
 
+  it('can add item into sold collection', async () => {
+    await inventoryService.addItem({ serialNumber: 'serial-number-2' }, soldItemMongoDataSource);
+    expect(await soldCollection.find().count()).toEqual(1);
+  });
+
   it('return error when item already exists', async () => {
-      await inventoryService.addItem({ serialNumber: 'serial-number-3' });
-      expect(await inventoryService.addItem({ serialNumber: 'serial-number-3' })).toBeInstanceOf(DuplicateSerialNumberError);
+      await inventoryService.addItem({ serialNumber: 'serial-number-3' }, itemMongoDataSource);
+      expect(await inventoryService.addItem({ serialNumber: 'serial-number-3' }, itemMongoDataSource)).toBeInstanceOf(DuplicateSerialNumberError);
   });
 
   it('can delete item by serialNumber', async () => {
