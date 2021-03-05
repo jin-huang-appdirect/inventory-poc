@@ -7,7 +7,7 @@ export class ItemMongoDataSource extends MongoDataSource<ItemEntity, any> implem
     super(collection);
   }
 
-  getItemQuantity(): Promise<Number> {
+  getItemQuantity(): Promise<number> {
     return this.collection.count().then(number => number);
   }
 

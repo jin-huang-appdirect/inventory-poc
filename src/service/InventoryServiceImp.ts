@@ -14,7 +14,7 @@ export class InventoryServiceImp extends InventoryService {
     this.itemDataSource = itemDataSource;
   }
 
-  getItemQuantity(): Promise<Number> {
+  getItemQuantity(): Promise<number> {
     return this.itemDataSource.getItemQuantity();
   }
 

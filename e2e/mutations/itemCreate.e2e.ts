@@ -2,7 +2,7 @@ import { TestApplication } from '../TestApplication';
 import { InventoryServerConfiguration } from '../../src/server/InventoryServerConfiguration';
 import { DuplicateSerialNumberError } from '../../src/errors';
 
-const configuration = new InventoryServerConfiguration('inventory-e2e-add-product', Math.floor(Math.random()*10000));
+const configuration = new InventoryServerConfiguration('inventory-e2e-create-item', Math.floor(Math.random()*10000));
 
 describe('create item', () => {
   const testApp = new TestApplication(configuration);

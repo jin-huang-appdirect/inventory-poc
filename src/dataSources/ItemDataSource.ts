@@ -1,7 +1,7 @@
 import { ItemEntity } from './ItemEntity';
 
 export interface ItemDataSource {
-  getItemQuantity(): Promise<Number>;
+  getItemQuantity(): Promise<number>;
   getItems(quantity: number): Promise<ItemEntity[]>;
   getItemBySerialNumber(serialNumber: String): Promise<ItemEntity>;
   insertItem(item: ItemEntity): Promise<ItemEntity>;

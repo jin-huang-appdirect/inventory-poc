@@ -28,4 +28,14 @@ export class InventoryTestClient extends TestClient {
       variables: { serialNumber },
     }).then(result => result.data.itemCreate);
   }
+
+  queryQuantity(): Promise<number> {
+    return super.query({
+      query: gql`
+        query {
+          itemQuantity
+        }
+      `,
+    }).then(result => result.data.itemQuantity);
+  }
 }
