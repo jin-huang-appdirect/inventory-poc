@@ -11,7 +11,7 @@ export class InventoryServiceImp extends InventoryService {
   soldItemDataSource: ItemDataSource;
 
   constructor(itemDataSource: ItemDataSource, soldItemDataSource: ItemDataSource) {
-    super(itemDataSource);
+    super(itemDataSource, soldItemDataSource);
     this.itemDataSource = itemDataSource;
     this.soldItemDataSource = soldItemDataSource;
   }

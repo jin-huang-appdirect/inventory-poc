@@ -3,6 +3,7 @@ import { InventoryServerConfiguration } from './InventoryServerConfiguration';
 import { buildSchema } from './buildSchema';
 import { Db, MongoClient } from 'mongodb';
 import { ItemMongoDataSource } from '../dataSources/ItemMongoDataSource';
+import { InventoryServiceImp } from '../service/InventoryServiceImp';
 
 export class InventoryServer extends InventoryApolloServer {
   connection: MongoClient;
@@ -12,7 +13,14 @@ export class InventoryServer extends InventoryApolloServer {
   constructor(configuration: InventoryServerConfiguration) {
     super({
       schema: buildSchema(),
-      dataSources: () => this.dataSources()
+      plugins: [
+        {
+          requestDidStart: ({ context }) => {
+            context.inventoryService = new InventoryServiceImp(new ItemMongoDataSource(this.db.collection('items')),
+              new ItemMongoDataSource(this.db.collection('soldItems')));
+          },
+        },
+      ],
     });
     this.configuration = configuration;
   }
@@ -25,12 +33,5 @@ export class InventoryServer extends InventoryApolloServer {
 
   async closeConnections(): Promise<void> {
     await this.connection.close();
-  }
-
-  dataSources(): any {
-    return {
-      items: new ItemMongoDataSource(this.db.collection('items')),
-      soldItems: new ItemMongoDataSource(this.db.collection('soldItems')),
-    };
   }
 }

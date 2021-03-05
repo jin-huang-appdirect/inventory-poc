@@ -1,5 +1,5 @@
 import { LowStockError, RetrieveQuantityError, UserError } from '../../errors';
-import { InventoryServiceImp } from '../../service/InventoryServiceImp';
+import { InventoryServerContext } from '../../server/InventoryServerContext';
 
 type ItemArgs = {
   quantity: number;
@@ -10,14 +10,13 @@ type ItemRetrievePayload = {
   userErrors?: UserError[];
 }
 
-export async function itemRetrieve(parent: any, { quantity }: ItemArgs, { dataSources: { items, soldItems } }: any): Promise<ItemRetrievePayload | null>{
+export async function itemRetrieve(parent: any, { quantity }: ItemArgs, { inventoryService }: InventoryServerContext): Promise<ItemRetrievePayload | null> {
 
-  const service  = new InventoryServiceImp(items, soldItems);
-  const response  = await service.retrieveItems(quantity);
+  const response  = await inventoryService.retrieveItems(quantity);
 
   if(response instanceof RetrieveQuantityError || response instanceof LowStockError) {
     return { serialNumbers: null, userErrors: [response] };
   }
 
-  return { serialNumbers: response.map(res => res.serialNumber), userErrors: null };
+  return { serialNumbers: response.map((res: any) => res.serialNumber), userErrors: null };
 }

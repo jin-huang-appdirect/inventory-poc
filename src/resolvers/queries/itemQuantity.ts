@@ -1,7 +1,6 @@
-import { InventoryServiceImp } from '../../service/InventoryServiceImp';
+import { InventoryServerContext } from '../../server/InventoryServerContext';
 
-export async function itemQuantity(parent: any, args: null, { dataSources: { items, soldItems } }: any): Promise<number> {
+export async function itemQuantity(parent: any, args: null, { inventoryService }: InventoryServerContext): Promise<number> {
 
-  const service  = new InventoryServiceImp(items, soldItems);
-  return await service.getItemQuantity();
+  return await inventoryService.getItemQuantity();
 }

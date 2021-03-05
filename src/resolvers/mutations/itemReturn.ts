@@ -1,6 +1,6 @@
-import { InventoryServiceImp } from '../../service/InventoryServiceImp';
 import { UserError } from '../../errors';
 import { Item } from '../../service/Item';
+import { InventoryServerContext } from '../../server/InventoryServerContext';
 
 type ItemCreateArgs = {
   serialNumber: string;
@@ -11,10 +11,9 @@ type ItemCreatePayload = {
   userErrors?: UserError[];
 }
 
-export async function itemReturn(parent: any, { serialNumber }: ItemCreateArgs, { dataSources: { items, soldItems } }: any): Promise<ItemCreatePayload> {
+export async function itemReturn(parent: any, { serialNumber }: ItemCreateArgs, { inventoryService }: InventoryServerContext): Promise<ItemCreatePayload> {
 
-  const service  = new InventoryServiceImp(items, soldItems);
-  const response  = await service.returnItem({ serialNumber });
+  const response  = await inventoryService.returnItem({ serialNumber });
   if(response instanceof UserError) {
     return { item: null, userErrors: [response] };
   }

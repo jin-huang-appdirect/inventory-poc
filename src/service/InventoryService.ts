@@ -3,7 +3,7 @@ import { Item } from './Item';
 import { DuplicateSerialNumberError, LowStockError, RetrieveQuantityError } from '../errors';
 
 export abstract class InventoryService {
-  protected constructor(itemDataSource: ItemDataSource) {}
+  protected constructor(itemDataSource: ItemDataSource, soldItemDataSource: ItemDataSource) {}
   abstract getItemQuantity(): Promise<number>;
   abstract async addItem(item: Item, itemDataSource: ItemDataSource): Promise<Item | DuplicateSerialNumberError>;
   abstract async returnItem(item: Item): Promise<Item | DuplicateSerialNumberError>;
