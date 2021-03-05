@@ -68,6 +68,7 @@ describe('inventory service', () => {
 
     await inventoryService.retrieveItems(2);
     expect(await collection.find().count()).toBe(1);
+    expect(await soldCollection.find().count()).toBe(2);
   });
 
   it('return error when stock is not available', async () => {

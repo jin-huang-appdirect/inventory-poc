@@ -43,6 +43,7 @@ export class InventoryServiceImp extends InventoryService {
     }
 
     items.map(item => this.deleteItemBySerialNumber(item.serialNumber));
+    items.map(item => this.addItem({ serialNumber: item.serialNumber }, this.soldItemDataSource));
     return items;
   }
 }
