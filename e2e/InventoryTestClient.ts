@@ -9,6 +9,11 @@ export interface ItemCreatePayload {
   userErrors: UserError[];
 }
 
+export interface ItemRetrievePayload {
+  serialNumbers: Object[];
+  userErrors: UserError[];
+}
+
 export class InventoryTestClient extends TestClient {
   create(serialNumber: string): Promise<ItemCreatePayload> {
     return super.mutate({
@@ -27,6 +32,27 @@ export class InventoryTestClient extends TestClient {
       `,
       variables: { serialNumber },
     }).then(result => result.data.itemCreate);
+  }
+
+  retrieve(quantity: number): Promise<ItemRetrievePayload> {
+    return super.mutate({
+      mutation: gql`
+        mutation($quantity: Int!) {
+          itemRetrieve(quantity: $quantity) {
+            serialNumbers
+            userErrors {
+              ... on RetrieveQuantityError {
+                message
+              }
+              ... on LowStockError {
+                message
+              }
+            }
+          }
+        }
+      `,
+      variables: { quantity },
+    }).then(result => result.data.itemRetrieve);
   }
 
   queryQuantity(): Promise<number> {

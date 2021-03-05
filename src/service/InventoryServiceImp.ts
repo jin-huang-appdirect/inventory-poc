@@ -20,7 +20,7 @@ export class InventoryServiceImp extends InventoryService {
 
   async addItem(item: Item): Promise<Item | DuplicateSerialNumberError> {
     if (await this.itemDataSource.getItemBySerialNumber(item.serialNumber)) {
-      return Promise.resolve(new DuplicateSerialNumberError(item.serialNumber));
+      return new DuplicateSerialNumberError(item.serialNumber);
     }
 
     return await this.itemDataSource.insertItem({ id: v4(), ...item });
@@ -30,14 +30,14 @@ export class InventoryServiceImp extends InventoryService {
     return this.itemDataSource.deleteItemBySerialNumber(serialNumber);
   }
 
-  async retrieveItems(quantity: number): Promise<Item[]> {
+  async retrieveItems(quantity: number): Promise<Item[] | RetrieveQuantityError | LowStockError> {
     if(quantity > maxQuantity) {
-      throw new RetrieveQuantityError();
+      return Promise.resolve(new RetrieveQuantityError());
     }
 
     const items = await this.itemDataSource.getItems(quantity);
     if(items.length < quantity) {
-      throw new LowStockError(items.length);
+      return Promise.resolve(new LowStockError(items.length));
     }
 
     items.map(item => this.deleteItemBySerialNumber(item.serialNumber));

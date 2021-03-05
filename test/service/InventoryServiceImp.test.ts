@@ -6,7 +6,7 @@ import { InventoryServiceImp } from '../../src/service/InventoryServiceImp';
 import { InventoryService } from '../../src/service/InventoryService';
 import { DuplicateSerialNumberError, LowStockError, RetrieveQuantityError } from '../../src/errors';
 
-describe('item mongo service', () => {
+describe('inventory service', () => {
   let connection: MongoClient, collection: Collection;
   let itemMongoDataSource: ItemMongoDataSource, inventoryService: InventoryService;
 
@@ -54,37 +54,25 @@ describe('item mongo service', () => {
       { id: v4(), serialNumber: 'serial-number-7' },
     ]);
 
-    const items = await inventoryService.retrieveItems(2);
-
+    await inventoryService.retrieveItems(2);
     expect(await collection.find().count()).toBe(1);
-    expect(items.length).toBe(2);
-    expect(items[0].serialNumber).toBe('serial-number-5');
-    expect(items[1].serialNumber).toBe('serial-number-6');
   });
 
-  it('throw error when stock is not available', async () => {
+  it('return error when stock is not available', async () => {
     await collection.insertMany([
       { id: v4(), serialNumber: 'serial-number-8' },
       { id: v4(), serialNumber: 'serial-number-9' },
     ]);
 
-    try {
-      await inventoryService.retrieveItems(3);
-    } catch (error) {
-      expect(error).toBeInstanceOf(LowStockError);
-    }
+    expect(await inventoryService.retrieveItems(3)).toBeInstanceOf(LowStockError);
   });
 
-  it('throw error when retrieved quantity exceed 3', async () => {
+  it('return error when retrieved quantity exceed 3', async () => {
     await collection.insertMany([
       { id: v4(), serialNumber: 'serial-number-8' },
       { id: v4(), serialNumber: 'serial-number-9' },
     ]);
 
-    try {
-      await inventoryService.retrieveItems(4);
-    } catch (error) {
-      expect(error).toBeInstanceOf(RetrieveQuantityError);
-    }
+    expect(await inventoryService.retrieveItems(4)).toBeInstanceOf(RetrieveQuantityError);
   });
 });

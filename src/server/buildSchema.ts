@@ -4,6 +4,7 @@ import { readFileSync } from 'fs';
 import * as path from 'path';
 import { itemCreate } from '../resolvers/mutations/itemCreate';
 import { itemQuantity } from '../resolvers/queries/itemQuantity';
+import { itemRetrieve } from '../resolvers/mutations/itemRetrieve';
 
 const schemaFilePath = 'resources/schema.graphql';
 
@@ -16,6 +17,7 @@ export function buildSchema() {
       },
       Mutation: {
         itemCreate,
+        itemRetrieve
       },
     }
   });
