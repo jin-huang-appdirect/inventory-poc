@@ -1,4 +1,4 @@
-import { LowStockError, RetrieveQuantityError, UserError } from '../../errors';
+import { UserError } from '../../errors';
 import { InventoryServerContext } from '../../server/InventoryServerContext';
 
 type ItemArgs = {
@@ -14,7 +14,7 @@ export async function itemRetrieve(parent: any, { quantity }: ItemArgs, { invent
 
   const response  = await inventoryService.retrieveItems(quantity);
 
-  if(response instanceof RetrieveQuantityError || response instanceof LowStockError) {
+  if(response instanceof UserError) {
     return { serialNumbers: null, userErrors: [response] };
   }
 
