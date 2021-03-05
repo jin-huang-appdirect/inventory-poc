@@ -35,9 +35,7 @@ export class InventoryServiceImp extends InventoryService {
       await this.soldItemDataSource.deleteItemBySerialNumber(soldItem.serialNumber);
     }
 
-    await this.addItem(item, this.itemDataSource);
-
-    return item;
+    return await this.addItem(item, this.itemDataSource);
   }
 
   deleteItemBySerialNumber(serialNumber: String): Promise<any> {

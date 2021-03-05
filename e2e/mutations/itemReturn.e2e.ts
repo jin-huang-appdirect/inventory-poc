@@ -4,7 +4,7 @@ import { DuplicateSerialNumberError } from '../../src/errors';
 
 const configuration = new InventoryServerConfiguration('inventory-e2e-create-item', Math.floor(Math.random()*10000));
 
-describe('create item', () => {
+describe('return item', () => {
   const testApp = new TestApplication(configuration);
 
   beforeAll(async () => await testApp.start());
