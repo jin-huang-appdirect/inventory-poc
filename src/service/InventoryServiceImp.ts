@@ -18,9 +18,9 @@ export class InventoryServiceImp extends InventoryService {
     return this.itemDataSource.getItemQuantity();
   }
 
-  async addItem(item: Item): Promise<Item> {
+  async addItem(item: Item): Promise<Item | DuplicateSerialNumberError> {
     if (await this.itemDataSource.getItemBySerialNumber(item.serialNumber)) {
-      throw new DuplicateSerialNumberError(item.serialNumber);
+      return Promise.resolve(new DuplicateSerialNumberError(item.serialNumber));
     }
 
     return await this.itemDataSource.insertItem({ id: v4(), ...item });

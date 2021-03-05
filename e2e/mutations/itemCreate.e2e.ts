@@ -18,7 +18,7 @@ describe('create item', () => {
     expect(payload.item.serialNumber).toBe('test-serial-number-1');
   });
 
-  it.skip('return error when try to create item with duplicate serial number', async () => {
+  it('return error when try to create item with duplicate serial number', async () => {
     await testApp.client.create('test-serial-number-2').then(payload => payload.userErrors);
     const userErrors = await testApp.client.create('test-serial-number-2').then(payload => payload.userErrors);
     expect(userErrors[0].__typename).toBe(DuplicateSerialNumberError.name);

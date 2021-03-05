@@ -15,5 +15,9 @@ export async function itemCreate(parent: any, { serialNumber }: ItemCreateArgs, 
 
   const service  = new InventoryServiceImp(items);
   const response  = await service.addItem({ serialNumber });
+  if(response instanceof UserError) {
+    return { item: null, userErrors: [response] };
+  }
+
   return { item: { serialNumber: response.serialNumber }, userErrors: null };
 }

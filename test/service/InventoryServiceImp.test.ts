@@ -35,13 +35,9 @@ describe('item mongo service', () => {
     expect(await collection.find().count()).toEqual(1);
   });
 
-  it('throw error when item already exists', async () => {
-    try {
+  it('return error when item already exists', async () => {
       await inventoryService.addItem({ serialNumber: 'serial-number-3' });
-      await inventoryService.addItem({ serialNumber: 'serial-number-3' });
-    } catch (error) {
-      expect(error).toBeInstanceOf(DuplicateSerialNumberError);
-    }
+      expect(await inventoryService.addItem({ serialNumber: 'serial-number-3' })).toBeInstanceOf(DuplicateSerialNumberError);
   });
 
   it('can delete item by serialNumber', async () => {
