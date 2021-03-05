@@ -28,6 +28,18 @@ export class InventoryServiceImp extends InventoryService {
     return await itemDataSource.insertItem({ id: v4(), ...item });
   }
 
+  async returnItem(item: Item): Promise<Item | DuplicateSerialNumberError> {
+    const soldItem = await this.soldItemDataSource.getItemBySerialNumber(item.serialNumber);
+    if (soldItem) {
+      await this.addItem(soldItem, this.itemDataSource);
+      await this.soldItemDataSource.deleteItemBySerialNumber(soldItem.serialNumber);
+    }
+
+    await this.addItem(item, this.itemDataSource);
+
+    return item;
+  }
+
   deleteItemBySerialNumber(serialNumber: String): Promise<any> {
     return this.itemDataSource.deleteItemBySerialNumber(serialNumber);
   }

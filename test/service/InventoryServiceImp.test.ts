@@ -20,7 +20,6 @@ describe('inventory service', () => {
 
     itemMongoDataSource = new ItemMongoDataSource(collection);
     soldItemMongoDataSource = new ItemMongoDataSource(soldCollection);
-    console.log(soldItemMongoDataSource);
     inventoryService = new InventoryServiceImp(itemMongoDataSource, soldItemMongoDataSource);
   });
 
@@ -87,5 +86,25 @@ describe('inventory service', () => {
     ]);
 
     expect(await inventoryService.retrieveItems(4)).toBeInstanceOf(RetrieveQuantityError);
+  });
+
+  it('can return item when item exist in sold collection', async () => {
+    await soldCollection.insertMany([
+      { id: v4(), serialNumber: 'serial-number-10' },
+      { id: v4(), serialNumber: 'serial-number-11' },
+    ]);
+
+    await inventoryService.returnItem({ serialNumber: 'serial-number-10' });
+
+    expect(await soldCollection.find({ serialNumber: 'serial-number-10' }).count()).toEqual(0);
+    expect(await collection.find({ serialNumber: 'serial-number-10' }).count()).toEqual(1);
+  });
+
+
+  it('can add item when item not exist in sold collection', async () => {
+    await inventoryService.returnItem({ serialNumber: 'serial-number-14' });
+
+    expect(await soldCollection.find({ serialNumber: 'serial-number-14' }).count()).toEqual(0);
+    expect(await collection.find({ serialNumber: 'serial-number-14' }).count()).toEqual(1);
   });
 });
