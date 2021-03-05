@@ -22,6 +22,6 @@ export class LowStockError extends UserError {
 
 export class RetrieveQuantityError extends UserError {
   constructor() {
-    super('You can only buy 3 items the most');
+    super('Retrieve quantity should be between 0 and 3 ');
   }
 }

@@ -88,6 +88,15 @@ describe('inventory service', () => {
     expect(await inventoryService.retrieveItems(4)).toBeInstanceOf(RetrieveQuantityError);
   });
 
+  it('return error when retrieved quantity equals 0', async () => {
+    await collection.insertMany([
+      { id: v4(), serialNumber: 'serial-number-8' },
+      { id: v4(), serialNumber: 'serial-number-9' },
+    ]);
+
+    expect(await inventoryService.retrieveItems(0)).toBeInstanceOf(RetrieveQuantityError);
+  });
+
   it('can return item when item exist in sold collection', async () => {
     await soldCollection.insertMany([
       { id: v4(), serialNumber: 'serial-number-10' },

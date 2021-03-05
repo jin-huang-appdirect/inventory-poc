@@ -28,6 +28,16 @@ describe('retrieve item', () => {
     expect(userErrors[0].__typename).toBe(RetrieveQuantityError.name);
   });
 
+  it('cannot retrieve when user retrieve number is less than 0 ', async () => {
+    const userErrors = await testApp.client.retrieve(-1).then(payload => payload.userErrors);
+    expect(userErrors[0].__typename).toBe(RetrieveQuantityError.name);
+  });
+
+  it('cannot retrieve when user retrieve number is equal 0 ', async () => {
+    const userErrors = await testApp.client.retrieve(0).then(payload => payload.userErrors);
+    expect(userErrors[0].__typename).toBe(RetrieveQuantityError.name);
+  });
+
   it('cannot retrieve when user retrieve number more than stock available ', async () => {
     const userErrors = await testApp.client.retrieve(3).then(payload => payload.userErrors);
     expect(userErrors[0].__typename).toBe(LowStockError.name);
